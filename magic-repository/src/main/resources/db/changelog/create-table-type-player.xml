@@ -1,0 +1,34 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="Natan" id="createPlayerType">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="player_type"></tableExists>
+            </not>
+        </preConditions>
+        <createTable tableName="player_type" schemaName="zup_magic">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="sequencePlayerType" author="Natan">
+        <createSequence sequenceName="player_type_sequence"/>
+    </changeSet>
+
+    <changeSet author="Natan" id="playerTypePk">
+        <addPrimaryKey schemaName="zup_magic" columnNames="id" constraintName="player_type_pkey" tableName="player_type"/>
+    </changeSet>
+
+</databaseChangeLog>

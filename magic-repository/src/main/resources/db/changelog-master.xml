@@ -2,5 +2,9 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
-    <include file="db/changelog/create-tables.xml"/>
+    <include file="db/changelog/create-table-type-player.xml"/>
+    <include file="db/changelog/insert-table-player-type.xml"/>
+    <include file="db/changelog/create-table-card.xml"/>
+    <include file="db/changelog/insert-cards-player.xml"/>
+    <include file="db/changelog/insert-cards-computer.xml"/>
 </databaseChangeLog>

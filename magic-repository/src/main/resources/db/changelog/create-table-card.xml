@@ -14,28 +14,47 @@
             </not>
         </preConditions>
         <createTable tableName="card" schemaName="zup_magic">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="mana" type="BIGINT">
+            <column name="name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="damage" type="BIGINT">
+            <column name="mana_cost" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="playerType" type="varchar(255)">
+            <column name="mana_damage" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="description" type="varchar(255)"/>
+            <column name="mana_recover" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="life_damage" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(500)"/>
+            <column name="player_type" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
 
     <changeSet id="2" author="Natan">
-        <createSequence sequenceName="card_sequence"/>
+        <createSequence sequenceName="card_sequence" startValue="200"/>
     </changeSet>
 
     <changeSet author="Natan" id="3">
         <addPrimaryKey schemaName="zup_magic" columnNames="id" constraintName="card_pkey" tableName="card"/>
     </changeSet>
 
+    <changeSet  author="liquibase-docs"  id="addForeignKeyConstraint">
+        <addForeignKeyConstraint  baseColumnNames="player_type"
+                                  baseTableName="card"
+                                  baseTableSchemaName="zup_magic"
+                                  constraintName="fk_player_type"
+                                  referencedColumnNames="id"
+                                  referencedTableName="player_type"
+                                  referencedTableSchemaName="zup_magic"
+        />
+    </changeSet>
 </databaseChangeLog>
