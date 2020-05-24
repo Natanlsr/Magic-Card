@@ -43,17 +43,6 @@
 
         <insert tableName="card" schemaName="zup_magic">
             <column name="id" value="13"/>
-            <column name="name" value="Perdeu a Daily"/>
-            <column name="mana_cost" value="3"/>
-            <column name="mana_damage" value="0"/>
-            <column name="mana_recover" value="0"/>
-            <column name="life_damage" value="5"/>
-            <column name="description" value="Sim, algo estranho aconteceu, só pode ser sobrenatural. Você perdeu a Daily, não sabe para onde seu time está levando o sistema, não conseguiu aproveitar para mostrar alguns dos impedimentos…. Perca 5 pontos de vida, isso irá custar para o bug 3 pontos de mana"/>
-            <column name="player_type" value="2"/>
-        </insert>
-
-        <insert tableName="card" schemaName="zup_magic">
-            <column name="id" value="14"/>
             <column name="name" value="EndPoint Batendo errado"/>
             <column name="mana_cost" value="4"/>
             <column name="mana_damage" value="0"/>
@@ -64,7 +53,7 @@
         </insert>
 
         <insert tableName="card" schemaName="zup_magic">
-            <column name="id" value="15"/>
+            <column name="id" value="14"/>
             <column name="name" value="Perdendo Contato"/>
             <column name="mana_cost" value="6"/>
             <column name="mana_damage" value="0"/>
@@ -75,7 +64,7 @@
         </insert>
 
         <insert tableName="card" schemaName="zup_magic">
-            <column name="id" value="16"/>
+            <column name="id" value="15"/>
             <column name="name" value="Má administração do Tempo"/>
             <column name="mana_cost" value="1"/>
             <column name="mana_damage" value="0"/>
@@ -86,7 +75,7 @@
         </insert>
 
         <insert tableName="card" schemaName="zup_magic">
-            <column name="id" value="17"/>
+            <column name="id" value="16"/>
             <column name="name" value="GIT"/>
             <column name="mana_cost" value="1"/>
             <column name="mana_damage" value="0"/>
@@ -97,7 +86,7 @@
         </insert>
 
         <insert tableName="card" schemaName="zup_magic">
-            <column name="id" value="18"/>
+            <column name="id" value="17"/>
             <column name="name" value="Pandemia"/>
             <column name="mana_cost" value="8"/>
             <column name="mana_damage" value="0"/>
@@ -108,7 +97,7 @@
         </insert>
 
         <insert tableName="card" schemaName="zup_magic">
-            <column name="id" value="19"/>
+            <column name="id" value="18"/>
             <column name="name" value="Sem teste"/>
             <column name="mana_cost" value="6"/>
             <column name="mana_damage" value="0"/>
