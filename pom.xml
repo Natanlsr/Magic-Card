@@ -21,6 +21,7 @@
         <module>magic-model</module>
         <module>magic-repository</module>
         <module>magic-application</module>
+        <module>magic-service</module>
     </modules>
 
     <properties>
