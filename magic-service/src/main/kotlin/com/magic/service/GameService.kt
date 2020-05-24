@@ -51,6 +51,8 @@ class GameService
      fun isAlive (player: Player, game: Game){
          if (player.life <= 0){
              game.gameStatus = GameStatusEnum.FINISHED
+         } else {
+             game.gameStatus = GameStatusEnum.WAIT_MOVEMENT
          }
      }
 
