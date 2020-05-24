@@ -10,11 +10,38 @@ data class Player(
     var deck: List<Card> = emptyList(),
     var playerTypeEnum: PlayerTypeEnum = PlayerTypeEnum.PLAYER
 ){
-    @JvmField val MaximmumNumberCards = 4
-
-    fun setCardsFromDeckCards(deckGame: List<Card>): List<Card>{
-        this.deck = deckGame.take(this.MaximmumNumberCards)
-        return deckGame.drop(this.MaximmumNumberCards)
+    companion object {
+        @JvmField val MaximmumNumberCards = 4
+        @JvmField val RecoverManaJumpRouund = 2
     }
+
+    fun setCardsFromDeckCards(deckGame: List<Card>, numberCards: Int = MaximmumNumberCards): List<Card>{
+
+        if(numberCards > MaximmumNumberCards)
+            throw Exception("Numero de Cartas maior do que o possivel")
+
+        this.deck = deckGame.take(numberCards)
+        return deckGame.drop(numberCards)
+    }
+
+    fun useCardAndRemoveFromDeck(card: Card){
+        if(card.manaCost <= this.mana){
+            this.mana -= card.manaCost
+        }else{
+            //lançar execeção
+        }
+        this.mana += card.manaRecover
+        this.deck = deck.filter { it -> it.id != card.id }
+    }
+
+    fun damageCard(card: Card){
+        this.life -= card.lifeDamage
+        this.mana -= card.manaDamage
+    }
+
+    fun recoverManaJumpRound(){
+        this.mana += RecoverManaJumpRouund
+    }
+
 
 }

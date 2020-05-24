@@ -20,12 +20,12 @@ data class Game(
         this.cardsToBuyByComputer = this.cardsToBuyByComputer.shuffled()
     }
 
-    fun setCardsInPlayers(){
+    fun setCardsInPlayers(numberCards: Int = Player.MaximmumNumberCards){
         this.randomizeDecks()
         for (player in this.players){
             when(player.playerTypeEnum!!.name){
-                PlayerTypeEnum.COMPUTER.name -> this.cardsToBuyByComputer = player.setCardsFromDeckCards(this.cardsToBuyByComputer)
-                PlayerTypeEnum.PLAYER.name -> this.cardsToBuyByPlayers = player.setCardsFromDeckCards(this.cardsToBuyByPlayers)
+                PlayerTypeEnum.COMPUTER.name -> this.cardsToBuyByComputer = player.setCardsFromDeckCards(this.cardsToBuyByComputer,numberCards)
+                PlayerTypeEnum.PLAYER.name -> this.cardsToBuyByPlayers = player.setCardsFromDeckCards(this.cardsToBuyByPlayers,numberCards)
             }
         }
     }
