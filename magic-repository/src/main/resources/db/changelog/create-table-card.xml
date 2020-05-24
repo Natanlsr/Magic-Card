@@ -1,0 +1,60 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="Natan" id="1">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="card"></tableExists>
+            </not>
+        </preConditions>
+        <createTable tableName="card" schemaName="zup_magic">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mana_cost" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mana_damage" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mana_recover" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="life_damage" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(500)"/>
+            <column name="player_type" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="Natan">
+        <createSequence sequenceName="card_sequence" startValue="200"/>
+    </changeSet>
+
+    <changeSet author="Natan" id="3">
+        <addPrimaryKey schemaName="zup_magic" columnNames="id" constraintName="card_pkey" tableName="card"/>
+    </changeSet>
+
+    <changeSet  author="liquibase-docs"  id="addForeignKeyConstraint">
+        <addForeignKeyConstraint  baseColumnNames="player_type"
+                                  baseTableName="card"
+                                  baseTableSchemaName="zup_magic"
+                                  constraintName="fk_player_type"
+                                  referencedColumnNames="id"
+                                  referencedTableName="player_type"
+                                  referencedTableSchemaName="zup_magic"
+        />
+    </changeSet>
+</databaseChangeLog>

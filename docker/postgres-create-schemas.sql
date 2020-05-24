@@ -1,0 +1,1 @@
+CREATE SCHEMA IF NOT EXISTS "zup_magic" AUTHORIZATION "zup_magic_manager";
