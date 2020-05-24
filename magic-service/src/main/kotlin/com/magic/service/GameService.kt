@@ -32,7 +32,19 @@ class GameService
         return game
     }
 
+    fun userRound(card: Card, playerJr : Player, playerBug : Player, game: Game){
+        useCard(card, playerJr)
+        damageCard(card, playerBug)
+        isAlive(playerBug, game)
+    }
 
+    fun bugRound(card: Card, playerBug: Player, playerJr: Player, game: Game){
+        useCard(card, playerBug)
+        damageCard(card, playerJr)
+        isAlive(playerJr, game)
+    }
+
+    // Enviar o player que joga a carta
     fun useCard(card : Card, player: Player){
         if (card.manaCost <=  player.mana){
             player.mana = player.mana - card.manaCost
@@ -41,13 +53,15 @@ class GameService
         }
     }
 
+    //Aqui enviar o player que sofre o dano
     fun damageCard (card: Card, player: Player){
-        if (card.manaDamage == 0 && card.lifeDamage > 0){
-            player.life = player.life - card.lifeDamage
-        } else {
-            player.mana = player.mana   - card.manaDamage
-        }
+        player.life = player.life - card.lifeDamage
+        player.mana = player.mana   - card.manaDamage
+
+        return p
     }
+
+    // verifica se o player esta vivo após a rodada.
      fun isAlive (player: Player, game: Game){
          if (player.life <= 0){
              game.gameStatus = GameStatusEnum.FINISHED
