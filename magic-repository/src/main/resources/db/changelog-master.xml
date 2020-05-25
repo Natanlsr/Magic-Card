@@ -7,4 +7,8 @@
     <include file="db/changelog/create-table-card.xml"/>
     <include file="db/changelog/insert-cards-player.xml"/>
     <include file="db/changelog/insert-cards-computer.xml"/>
+    <include file="db/changelog/create-table-game.xml"/>
+    <include file="db/changelog/create-table-player.xml"/>
+    <include file="db/changelog/create-table-game-decks.xml"/>
+    <include file="db/changelog/create-table-player-deck.xml"/>
 </databaseChangeLog>

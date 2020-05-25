@@ -1,0 +1,44 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="Natan" id="create_game">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="game"></tableExists>
+            </not>
+        </preConditions>
+        <createTable tableName="game" schemaName="zup_magic">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="round" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="game_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="game_status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="index_player_turn" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="sequence_game" author="Natan">
+        <createSequence sequenceName="game_sequence" schemaName="zup_magic"/>
+    </changeSet>
+
+    <changeSet author="Natan" id="pk_game">
+        <addPrimaryKey schemaName="zup_magic" columnNames="id" constraintName="game_pkey" tableName="game"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -40,7 +40,7 @@
     </changeSet>
 
     <changeSet id="2" author="Natan">
-        <createSequence sequenceName="card_sequence" startValue="200"/>
+        <createSequence sequenceName="card_sequence" startValue="200" schemaName="zup_magic"/>
     </changeSet>
 
     <changeSet author="Natan" id="3">
@@ -55,6 +55,8 @@
                                   referencedColumnNames="id"
                                   referencedTableName="player_type"
                                   referencedTableSchemaName="zup_magic"
+                                  onDelete="NO ACTION"
+                                  onUpdate="NO ACTION"
         />
     </changeSet>
 </databaseChangeLog>

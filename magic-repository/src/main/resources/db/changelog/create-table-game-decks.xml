@@ -1,0 +1,56 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="Natan" id="create_game_deck">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="game_deck"></tableExists>
+            </not>
+        </preConditions>
+        <createTable tableName="game_deck" schemaName="zup_magic">
+            <column name="id_game" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id_card" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Natan" id="pk_pgame_deck">
+        <addPrimaryKey schemaName="zup_magic" columnNames="id_game, id_card" constraintName="game_deck_pkey" tableName="game_deck"/>
+    </changeSet>
+
+    <changeSet  author="liquibase-docs"  id="FKSPGameDeck">
+        <addForeignKeyConstraint  baseColumnNames="id_game"
+                                  baseTableName="game_deck"
+                                  baseTableSchemaName="zup_magic"
+                                  constraintName="fk_game_id"
+                                  referencedColumnNames="id"
+                                  referencedTableName="game"
+                                  referencedTableSchemaName="zup_magic"
+                                  onDelete="NO ACTION"
+                                  onUpdate="NO ACTION"
+        />
+
+        <addForeignKeyConstraint  baseColumnNames="id_card"
+                                  baseTableName="game_deck"
+                                  baseTableSchemaName="zup_magic"
+                                  constraintName="fk_card_id"
+                                  referencedColumnNames="id"
+                                  referencedTableName="card"
+                                  referencedTableSchemaName="zup_magic"
+                                  onDelete="NO ACTION"
+                                  onUpdate="NO ACTION"
+        />
+
+    </changeSet>
+
+</databaseChangeLog>
