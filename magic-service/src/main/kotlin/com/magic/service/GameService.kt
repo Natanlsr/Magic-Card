@@ -9,11 +9,9 @@ import com.magic.model.Card
 import com.magic.model.Game
 import com.magic.model.Player
 import com.magic.repository.GameRepository
-import com.magic.repository.PlayerRepository
 import com.magic.service.enums.ExceptionEnum
 import com.magic.service.exceptions.GameNotFoundException
 import com.magic.service.exceptions.NotTurnPlayerException
-import com.magic.service.exceptions.PlayerNotFoundException
 import com.magic.service.movements.InitialMovement
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -23,9 +21,9 @@ import javax.transaction.Transactional
 @Service
 open class GameService
 @Autowired constructor(
-    val cardService: CardService,
     val gameRepository: GameRepository,
-    val playerRepository: PlayerRepository
+    val cardService: CardService,
+    val playerService: PlayerService
 ){
     @Transactional
     open fun startVsCPU(player: Player): Game{
@@ -40,18 +38,15 @@ open class GameService
         )
         game.setCardsInPlayers()
 
-        playerRepository.save(player)
-        playerRepository.save(cpuPlayer)
+        playerService.savePlayer(player)
+        playerService.savePlayer(cpuPlayer)
         gameRepository.save(game)
         return game
     }
 
     fun executeMovement(idGame: Int,idPlayer: Int, movementTypeEnum: MovementEnum, idCard:Int): Game{
-        val player = playerRepository.findById(idPlayer)
-            .orElseGet { throw PlayerNotFoundException(ExceptionEnum.PLAYER_NOT_FOUND.name) }
-
-        val game = gameRepository.findById(idGame)
-            .orElseGet { throw GameNotFoundException(ExceptionEnum.GAME_NOT_FOUND.name) }
+        val player= playerService.findPlayerById(idPlayer)
+        val game  = findGameById(idGame)
 
         val card = cardService.findCardById(idCard)
         val playerTurn = game.players[game.indexPlayerTurn]
@@ -75,6 +70,11 @@ open class GameService
         game.indexPlayerTurn = (game.indexPlayerTurn + 1) % game.players.size
         gameRepository.save(game)
         return game
+    }
+
+    fun findGameById(id: Int): Game{
+        return  gameRepository.findById(id)
+            .orElseGet { throw GameNotFoundException(ExceptionEnum.GAME_NOT_FOUND.name) }
     }
 
     private fun checkAndSetStatusGame(game: Game){
