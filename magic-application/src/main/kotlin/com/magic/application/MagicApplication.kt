@@ -1,5 +1,6 @@
 package com.magic.application
 
+import com.magic.application.config.WebSocketConfig
 import com.magic.application.controller.GameController
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.domain.EntityScan
@@ -14,7 +15,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
         "com.magic.repository"
     ],
     basePackageClasses = [
-        GameController::class
+        GameController::class,
+        WebSocketConfig::class
     ]
 )
 @EnableJpaRepositories("com.magic.repository")

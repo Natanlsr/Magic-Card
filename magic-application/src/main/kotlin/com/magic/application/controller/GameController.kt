@@ -1,22 +1,29 @@
 package com.magic.application.controller
 
+import com.magic.model.Game
 import com.magic.model.Player
 import com.magic.service.GameService
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.messaging.handler.annotation.MessageMapping
+import org.springframework.messaging.handler.annotation.SendTo
+import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
 import javax.validation.Valid
-import javax.xml.ws.Service
 
-@RestController
+@Controller
 class GameController(
     val gameService: GameService
 ) {
 
-    @PostMapping("/game")
-    fun createGame(@Valid @RequestBody player: Player): ResponseEntity<*> {
-        return ResponseEntity.ok().body(gameService.startVsCPU(player))
+    @MessageMapping("/start_game")
+    @SendTo("/topic/game_started")
+    fun createGame(@Valid @RequestBody player: Player): Game {
+        return gameService.startVsCPU(player)
     }
+
+    @MessageMapping("/movement")
+    @SendTo("/topic/movement_executed")
+    fun receiveMovement(@Valid @RequestBody player: Player): Game {
+        return gameService.startVsCPU(player)
+    }
+
 }

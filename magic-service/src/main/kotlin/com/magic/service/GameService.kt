@@ -14,17 +14,20 @@ import com.magic.service.exceptions.GameNotFoundException
 import com.magic.service.exceptions.NotTurnPlayerException
 import com.magic.service.movements.InitialMovement
 import org.springframework.beans.factory.annotation.Autowired
-
+import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional
+
 
 @Service
 open class GameService
 @Autowired constructor(
     val gameRepository: GameRepository,
     val cardService: CardService,
-    val playerService: PlayerService
+    val playerService: PlayerService,
+    val template: SimpMessagingTemplate
 ){
+
     @Transactional
     open fun startVsCPU(player: Player): Game{
         val cpuPlayer = Player(name = "CPU",playerType = PlayerTypeEnum.COMPUTER)
@@ -33,7 +36,7 @@ open class GameService
             gameType = GameTypeEnum.CPU,
             cardsToBuyByComputer = cardService.getCardsPlayers(PlayerTypeEnum.COMPUTER)!!,
             cardsToBuyByPlayers  = cardService.getCardsPlayers(PlayerTypeEnum.PLAYER)!!,
-            players = listOf(player,cpuPlayer).shuffled(),
+            players = listOf(player,cpuPlayer),
             gameStatus = GameStatusEnum.PROGRESS
         )
         game.setCardsInPlayers()
@@ -41,6 +44,7 @@ open class GameService
         playerService.savePlayer(player)
         playerService.savePlayer(cpuPlayer)
         gameRepository.save(game)
+        template.convertAndSend("/game",game)
         return game
     }
 
