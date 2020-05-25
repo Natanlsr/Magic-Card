@@ -2,19 +2,22 @@ package com.magic.service
 
 import com.magic.enums.GameStatusEnum
 import com.magic.enums.GameTypeEnum
+import com.magic.enums.MovementEnum
 import com.magic.enums.PlayerTypeEnum
 import com.magic.extensions.setCardsInPlayers
 import com.magic.model.Card
 import com.magic.model.Game
-import com.magic.model.Movement
 import com.magic.model.Player
 import com.magic.repository.GameRepository
 import com.magic.repository.PlayerRepository
+import com.magic.service.enums.ExceptionEnum
+import com.magic.service.exceptions.GameNotFoundException
+import com.magic.service.exceptions.NotTurnPlayerException
+import com.magic.service.exceptions.PlayerNotFoundException
 import com.magic.service.movements.InitialMovement
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.springframework.stereotype.Service
-import java.lang.Exception
 import javax.transaction.Transactional
 
 @Service
@@ -32,7 +35,7 @@ open class GameService
             gameType = GameTypeEnum.CPU,
             cardsToBuyByComputer = cardService.getCardsPlayers(PlayerTypeEnum.COMPUTER)!!,
             cardsToBuyByPlayers  = cardService.getCardsPlayers(PlayerTypeEnum.PLAYER)!!,
-            players = listOf(player,cpuPlayer),
+            players = listOf(player,cpuPlayer).shuffled(),
             gameStatus = GameStatusEnum.PROGRESS
         )
         game.setCardsInPlayers()
@@ -43,13 +46,22 @@ open class GameService
         return game
     }
 
-    fun executeMovement(idGame: Int,player: Player, movement: Movement, card: Card): Game{
-        val gameOptional = gameRepository.findById(idGame)
+    fun executeMovement(idGame: Int,idPlayer: Int, movementTypeEnum: MovementEnum, idCard:Int): Game{
+        val player = playerRepository.findById(idPlayer)
+            .orElseGet { throw PlayerNotFoundException(ExceptionEnum.PLAYER_NOT_FOUND.name) }
 
-        val game = gameOptional.orElseGet { throw Exception() }
+        val game = gameRepository.findById(idGame)
+            .orElseGet { throw GameNotFoundException(ExceptionEnum.GAME_NOT_FOUND.name) }
+
+        val card = cardService.findCardById(idCard)
+        val playerTurn = game.players[game.indexPlayerTurn]
+
+        if(playerTurn.id != player.id){
+            throw NotTurnPlayerException(ExceptionEnum.NOT_TURN_PLAYER.name)
+        }
 
         val movement: InitialMovement = InitialMovement(
-            movementEnum = movement.type!!,
+            movementEnum = movementTypeEnum,
             players = game.players.filter { it -> it.id != player.id },
             playerRound = player,
             card = card
@@ -59,6 +71,8 @@ open class GameService
         movement.checkMovementTypeAndProcess()
         checkAndSetStatusGame(game)
         checkAndActualizeDeckPlayersAndGame(player,card,game)
+        game.indexPlayerTurn = (game.players.size)
+        game.indexPlayerTurn = (game.indexPlayerTurn + 1) % game.players.size
         gameRepository.save(game)
         return game
     }
