@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface PlayerTypeRepository: JpaRepository<PlayerType, Long> {
+interface PlayerTypeRepository: JpaRepository<PlayerType, Int> {
     fun findByType(playerTypeEnum: PlayerTypeEnum): PlayerType
 }

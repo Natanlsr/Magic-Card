@@ -2,30 +2,33 @@ package com.magic.service
 
 import com.magic.enums.GameStatusEnum
 import com.magic.enums.GameTypeEnum
-import com.magic.enums.MovementEnum
 import com.magic.enums.PlayerTypeEnum
 import com.magic.extensions.setCardsInPlayers
 import com.magic.model.Card
 import com.magic.model.Game
 import com.magic.model.Movement
 import com.magic.model.Player
-import com.magic.model.PlayerType
-import com.magic.service.movements.AplyCardMovement
+import com.magic.repository.GameRepository
+import com.magic.repository.PlayerRepository
 import com.magic.service.movements.InitialMovement
+import liquibase.pro.packaged.E
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.springframework.stereotype.Service
+import java.lang.Exception
+import javax.transaction.Transactional
 
 @Service
-class GameService
+open class GameService
 @Autowired constructor(
-    val cardService: CardService
+    val cardService: CardService,
+    val gameRepository: GameRepository,
+    val playerRepository: PlayerRepository
 ){
-    private var gameGlobal: Game? = null
+    @Transactional
+    open fun startVsCPU(player: Player): Game{
 
-    fun startVsCPU(player: Player): Game{
-
-        val cpuPlayer = Player(id = 1,name = "CPU",playerTypeEnum = PlayerTypeEnum.COMPUTER)
+        val cpuPlayer = Player(name = "CPU",playerTypeEnum = PlayerTypeEnum.COMPUTER)
 
         val game = Game(
             gameType = GameTypeEnum.CPU,
@@ -34,43 +37,50 @@ class GameService
             players = listOf(player,cpuPlayer),
             gameStatus = GameStatusEnum.PROGRESS
         )
-
         game.setCardsInPlayers()
-        gameGlobal = game
+
+        playerRepository.save(player)
+        playerRepository.save(cpuPlayer)
+        gameRepository.save(game)
         return game
     }
 
-    fun executeMovement(player: Player, movement: Movement, card: Card): Game{
+    fun executeMovement(idGame: Int,player: Player, movement: Movement, card: Card): Game{
+        val gameOptional = gameRepository.findById(idGame)
+
+        val game = gameOptional.orElseGet { throw Exception() }
+
         val movement: InitialMovement = InitialMovement(
             movementEnum = movement.type!!,
-            players = gameGlobal!!.players.filter { it -> it.id != player.id },
+            players = game.players.filter { it -> it.id != player.id },
             playerRound = player,
             card = card
         )
 
         //Execute game logic's
         movement.checkMovementTypeAndProcess()
-        checkAndSetStatusGame()
-        checkAndAtualizeDeckPlayersAndGame(player,card)
-        return gameGlobal!!
+        checkAndSetStatusGame(game)
+        checkAndActualizeDeckPlayersAndGame(player,card,game)
+        gameRepository.save(game)
+        return game
     }
 
-    fun checkAndSetStatusGame(){
-        val playersDead: List<Player> = gameGlobal!!.players.filter { it -> it.life == 0 }
+    private fun checkAndSetStatusGame(game: Game){
+        val playersDead: List<Player> = game.players.filter { it -> it.life == 0 }
 
         when(playersDead.isEmpty()){
-             true  -> gameGlobal!!.gameStatus = GameStatusEnum.FINISHED
-             false -> gameGlobal!!.gameStatus = GameStatusEnum.PROGRESS
+             true  -> game.gameStatus = GameStatusEnum.FINISHED
+             false -> game.gameStatus = GameStatusEnum.PROGRESS
         }
     }
 
-    fun checkAndAtualizeDeckPlayersAndGame(playerRound: Player,cardUsed: Card){
+    private fun checkAndActualizeDeckPlayersAndGame(playerRound: Player, cardUsed: Card, game: Game){
 
         when(playerRound.playerTypeEnum){
-            PlayerTypeEnum.PLAYER -> gameGlobal!!.cardsToBuyByPlayers.toMutableList().add(cardUsed)
-            PlayerTypeEnum.COMPUTER -> gameGlobal!!.cardsToBuyByComputer.toMutableList().add(cardUsed)
+            PlayerTypeEnum.PLAYER -> game.cardsToBuyByPlayers.toMutableList().add(cardUsed)
+            PlayerTypeEnum.COMPUTER -> game.cardsToBuyByComputer.toMutableList().add(cardUsed)
         }
-        gameGlobal!!.setCardsInPlayers(1)
+        game.setCardsInPlayers(1)
     }
 
 }
