@@ -26,7 +26,7 @@ open class GameService
 ){
     @Transactional
     open fun startVsCPU(player: Player): Game{
-        val cpuPlayer = Player(name = "CPU",playerTypeEnum = PlayerTypeEnum.COMPUTER)
+        val cpuPlayer = Player(name = "CPU",playerType = PlayerTypeEnum.COMPUTER)
 
         val game = Game(
             gameType = GameTypeEnum.CPU,
@@ -76,7 +76,7 @@ open class GameService
     }
 
     private fun checkAndActualizeDeckPlayersAndGame(playerRound: Player, cardUsed: Card, game: Game){
-        when(playerRound.playerTypeEnum){
+        when(playerRound.playerType){
             PlayerTypeEnum.PLAYER -> game.cardsToBuyByPlayers.toMutableList().add(cardUsed)
             PlayerTypeEnum.COMPUTER -> game.cardsToBuyByComputer.toMutableList().add(cardUsed)
         }

@@ -11,12 +11,11 @@ import javax.validation.Valid
 import javax.xml.ws.Service
 
 @RestController
-@RequestMapping("/game")
 class GameController(
     val gameService: GameService
 ) {
 
-    @PostMapping
+    @PostMapping("/game")
     fun createGame(@Valid @RequestBody player: Player): ResponseEntity<*> {
         return ResponseEntity.ok().body(gameService.startVsCPU(player))
     }

@@ -6,6 +6,7 @@ import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 import javax.persistence.SequenceGenerator
 
@@ -13,24 +14,25 @@ import javax.persistence.SequenceGenerator
 @Builder
 @NoArgsConstructor
 data class Card (
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "card_sequence")
     @SequenceGenerator(name = "card_sequence", sequenceName = "card_sequence", allocationSize = 1)
     val id: Long? = null,
 
-    val name: String,
+    var name: String = "",
 
-    val manaCost: Int,
+    var manaCost: Int = 0,
 
-    val manaDamage: Int,
+    var manaDamage: Int = 0,
 
-    val manaRecover: Int,
+    var manaRecover: Int = 0,
 
-    val lifeDamage: Int,
+    var lifeDamage: Int = 0 ,
 
-    val description: String,
+    var description: String = "",
 
     @ManyToOne
-    val playerType: PlayerType
+    @JoinColumn(name="player_type", referencedColumnName = "id")
+    var playerType: PlayerType? = null
+
 )

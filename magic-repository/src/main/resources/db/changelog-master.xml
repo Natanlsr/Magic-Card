@@ -11,4 +11,5 @@
     <include file="db/changelog/create-table-player.xml"/>
     <include file="db/changelog/create-table-game-decks.xml"/>
     <include file="db/changelog/create-table-player-deck.xml"/>
+    <include file="db/changelog/create-table-players-in-game.xml"/>
 </databaseChangeLog>

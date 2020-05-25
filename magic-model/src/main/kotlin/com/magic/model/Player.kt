@@ -7,6 +7,8 @@ import javax.persistence.Enumerated
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.JoinTable
 import javax.persistence.ManyToMany
 import javax.persistence.SequenceGenerator
 
@@ -24,10 +26,16 @@ data class Player(
     var mana: Int = 20,
 
     @ManyToMany
+    @JoinTable(
+        name="player_deck",
+        joinColumns = [JoinColumn(name = "player_id")],
+        inverseJoinColumns = [JoinColumn(name="card_id")]
+
+    )
     var deck: List<Card> = emptyList(),
 
     @Enumerated(EnumType.STRING)
-    var playerTypeEnum: PlayerTypeEnum = PlayerTypeEnum.PLAYER
+    var playerType: PlayerTypeEnum = PlayerTypeEnum.PLAYER
 ){
     companion object {
         @JvmField val MaximmumNumberCards = 4

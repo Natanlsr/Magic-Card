@@ -7,30 +7,30 @@
    http://www.liquibase.org/xml/ns/dbchangelog
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-    <changeSet author="Natan" id="create_player_deck">
+    <changeSet author="Natan" id="create_player_game">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="player_deck"></tableExists>
+                <tableExists tableName="players_game"></tableExists>
             </not>
         </preConditions>
-        <createTable tableName="player_deck" schemaName="zup_magic">
+        <createTable tableName="players_game" schemaName="zup_magic">
             <column name="player_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="card_id" type="BIGINT">
+            <column name="game_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
 
         </createTable>
     </changeSet>
 
-    <changeSet author="Natan" id="pk_player_deck">
-        <addPrimaryKey schemaName="zup_magic" columnNames="player_id,card_id" constraintName="players_deck_pkey" tableName="player_deck"/>
+    <changeSet author="Natan" id="pk_players_game">
+        <addPrimaryKey schemaName="zup_magic" columnNames="player_id,game_id" constraintName="players_game_pkey" tableName="players_game"/>
     </changeSet>
 
-    <changeSet  author="liquibase-docs"  id="FKSPlayerDeck">
+    <changeSet  author="liquibase-docs"  id="FKSPlayerGame">
         <addForeignKeyConstraint  baseColumnNames="player_id"
-                                  baseTableName="player_deck"
+                                  baseTableName="players_game"
                                   baseTableSchemaName="zup_magic"
                                   constraintName="fk_player_id"
                                   referencedColumnNames="id"
@@ -40,12 +40,12 @@
                                   onUpdate="NO ACTION"
         />
 
-        <addForeignKeyConstraint  baseColumnNames="card_id"
-                                  baseTableName="player_deck"
+        <addForeignKeyConstraint  baseColumnNames="game_id"
+                                  baseTableName="players_game"
                                   baseTableSchemaName="zup_magic"
-                                  constraintName="fk_card_id"
+                                  constraintName="fk_game_id"
                                   referencedColumnNames="id"
-                                  referencedTableName="card"
+                                  referencedTableName="game"
                                   referencedTableSchemaName="zup_magic"
                                   onDelete="NO ACTION"
                                   onUpdate="NO ACTION"
