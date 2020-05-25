@@ -1,47 +1,36 @@
 package com.magic.model
 
 import com.magic.enums.PlayerTypeEnum
+import javax.persistence.Entity
+import javax.persistence.EnumType
+import javax.persistence.Enumerated
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
+import javax.persistence.ManyToMany
+import javax.persistence.SequenceGenerator
 
+@Entity
 data class Player(
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "player_sequence")
+    @SequenceGenerator(name = "player_sequence", sequenceName = "player_sequence", allocationSize = 1)
     val id: Int? = null,
+
     val name: String? = null,
+
     var life: Int = 20,
+
     var mana: Int = 20,
+
+    @ManyToMany
     var deck: List<Card> = emptyList(),
+
+    @Enumerated(EnumType.STRING)
     var playerTypeEnum: PlayerTypeEnum = PlayerTypeEnum.PLAYER
 ){
     companion object {
         @JvmField val MaximmumNumberCards = 4
         @JvmField val RecoverManaJumpRouund = 2
     }
-
-    fun setCardsFromDeckCards(deckGame: List<Card>, numberCards: Int = MaximmumNumberCards): List<Card>{
-
-        if(numberCards > MaximmumNumberCards)
-            throw Exception("Numero de Cartas maior do que o possivel")
-
-        this.deck = deckGame.take(numberCards)
-        return deckGame.drop(numberCards)
-    }
-
-    fun useCardAndRemoveFromDeck(card: Card){
-        if(card.manaCost <= this.mana){
-            this.mana -= card.manaCost
-        }else{
-            //lançar execeção
-        }
-        this.mana += card.manaRecover
-        this.deck = deck.filter { it -> it.id != card.id }
-    }
-
-    fun damageCard(card: Card){
-        this.life -= card.lifeDamage
-        this.mana -= card.manaDamage
-    }
-
-    fun recoverManaJumpRound(){
-        this.mana += RecoverManaJumpRouund
-    }
-
-
 }

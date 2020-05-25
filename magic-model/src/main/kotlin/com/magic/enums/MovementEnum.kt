@@ -1,7 +1,7 @@
 package com.magic.enums
 
 enum class MovementEnum {
-    APLY_CARD,
-    JUMP_ROUND,
-    BUY_CARDS
+    INITIAL_MOVEMENT,
+    APPLY_CARD,
+    JUMP_ROUND
 }

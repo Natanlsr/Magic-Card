@@ -1,30 +1,37 @@
 package com.magic.service.movements
 
 import com.magic.enums.MovementEnum
+import com.magic.extensions.damageCard
+import com.magic.extensions.useCardAndRemoveFromDeck
 import com.magic.model.Card
 import com.magic.model.Movement
 import com.magic.model.Player
 import org.springframework.stereotype.Component
 
 @Component
-class AplyCardMovement: Movement {
+class AplyCardMovement : Movement {
 
-    constructor(card: Card,players: List<Player>,playerRound: Player, movementEnum: MovementEnum){
-        this.type = movementEnum
-        this.card = card
-        this.players = players
-        this.playerRound = playerRound
-        this.netxMovement = JumpRoundMovement(card,players,playerRound)
+    constructor(card: Card, players: List<Player>, playerRound: Player, movementEnum: MovementEnum):
+        super(card,players,playerRound,movementEnum) {
+        this.netxMovement = JumpRoundMovement(card,players,playerRound,movementEnum)
     }
 
     override fun checkMovementTypeAndProcess() {
-        if(this.type!!.name.equals(MovementEnum.APLY_CARD)){
-            playerRound!!.useCardAndRemoveFromDeck(this.card!!)
-            players!!.forEach { player-> player.damageCard(this.card!!) }
-        }else{
-            processNextMovement()
-        }
-    }
 
+        when (this.type) {
+            MovementEnum.APPLY_CARD -> {
+                this.playerRound?.let {
+                    it.useCardAndRemoveFromDeck(this.card!!)
+                }
+                this.players?.let {
+                    it.forEach { player ->
+                        player.damageCard(this.card!!)
+                    }
+                }
+            }
+            else -> processNextMovement()
+        }
+
+    }
 
 }

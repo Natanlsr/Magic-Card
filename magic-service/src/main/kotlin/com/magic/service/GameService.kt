@@ -4,12 +4,14 @@ import com.magic.enums.GameStatusEnum
 import com.magic.enums.GameTypeEnum
 import com.magic.enums.MovementEnum
 import com.magic.enums.PlayerTypeEnum
+import com.magic.extensions.setCardsInPlayers
 import com.magic.model.Card
 import com.magic.model.Game
 import com.magic.model.Movement
 import com.magic.model.Player
 import com.magic.model.PlayerType
 import com.magic.service.movements.AplyCardMovement
+import com.magic.service.movements.InitialMovement
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.springframework.stereotype.Service
@@ -39,7 +41,7 @@ class GameService
     }
 
     fun executeMovement(player: Player, movement: Movement, card: Card): Game{
-        val movement: AplyCardMovement = AplyCardMovement(
+        val movement: InitialMovement = InitialMovement(
             movementEnum = movement.type!!,
             players = gameGlobal!!.players.filter { it -> it.id != player.id },
             playerRound = player,
@@ -54,14 +56,12 @@ class GameService
     }
 
     fun checkAndSetStatusGame(){
-        val playersDead: List<Player>? = gameGlobal!!.players.filter { it -> it.life == 0 }
+        val playersDead: List<Player> = gameGlobal!!.players.filter { it -> it.life == 0 }
 
-        var gameStatus = GameStatusEnum.FINISHED
-
-        if(playersDead == null)
-            gameStatus= GameStatusEnum.PROGRESS
-
-        gameGlobal!!.gameStatus = gameStatus
+        when(playersDead.isEmpty()){
+             true  -> gameGlobal!!.gameStatus = GameStatusEnum.FINISHED
+             false -> gameGlobal!!.gameStatus = GameStatusEnum.PROGRESS
+        }
     }
 
     fun checkAndAtualizeDeckPlayersAndGame(playerRound: Player,cardUsed: Card){

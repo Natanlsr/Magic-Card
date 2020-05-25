@@ -21,5 +21,5 @@ data class PlayerType(
     val id: Long? = null,
 
     @Enumerated(EnumType.STRING)
-    val type: PlayerTypeEnum
+    val type: PlayerTypeEnum = PlayerTypeEnum.PLAYER
 )
