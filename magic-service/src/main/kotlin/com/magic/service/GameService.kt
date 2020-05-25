@@ -57,8 +57,6 @@ class GameService
     fun damageCard (card: Card, player: Player){
         player.life = player.life - card.lifeDamage
         player.mana = player.mana   - card.manaDamage
-
-        return p
     }
 
     // verifica se o player esta vivo após a rodada.
