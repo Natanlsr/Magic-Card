@@ -11,7 +11,6 @@ import com.magic.model.Player
 import com.magic.repository.GameRepository
 import com.magic.repository.PlayerRepository
 import com.magic.service.movements.InitialMovement
-import liquibase.pro.packaged.E
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.springframework.stereotype.Service
@@ -27,7 +26,6 @@ open class GameService
 ){
     @Transactional
     open fun startVsCPU(player: Player): Game{
-
         val cpuPlayer = Player(name = "CPU",playerTypeEnum = PlayerTypeEnum.COMPUTER)
 
         val game = Game(
@@ -69,13 +67,15 @@ open class GameService
         val playersDead: List<Player> = game.players.filter { it -> it.life == 0 }
 
         when(playersDead.isEmpty()){
-             true  -> game.gameStatus = GameStatusEnum.FINISHED
+             true  -> {
+                 game.gameStatus = GameStatusEnum.FINISHED
+                 game.players.sortedBy { it.life }
+             }
              false -> game.gameStatus = GameStatusEnum.PROGRESS
         }
     }
 
     private fun checkAndActualizeDeckPlayersAndGame(playerRound: Player, cardUsed: Card, game: Game){
-
         when(playerRound.playerTypeEnum){
             PlayerTypeEnum.PLAYER -> game.cardsToBuyByPlayers.toMutableList().add(cardUsed)
             PlayerTypeEnum.COMPUTER -> game.cardsToBuyByComputer.toMutableList().add(cardUsed)
