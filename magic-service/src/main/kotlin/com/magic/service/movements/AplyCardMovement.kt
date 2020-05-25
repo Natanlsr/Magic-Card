@@ -8,7 +8,6 @@ import com.magic.model.Movement
 import com.magic.model.Player
 import org.springframework.stereotype.Component
 
-@Component
 class AplyCardMovement : Movement {
 
     constructor(card: Card, players: List<Player>, playerRound: Player, movementEnum: MovementEnum):

@@ -17,7 +17,15 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>magic-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>magic-repository</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>magic-model</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
