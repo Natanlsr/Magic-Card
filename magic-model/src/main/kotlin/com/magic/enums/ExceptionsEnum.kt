@@ -1,5 +1,6 @@
 package com.magic.enums
 
 enum class ExceptionsEnum(name: String) {
-    MANA_INSUFICIENTE("Player não possui mana suficiente")
+    MADA_INSUFFICIENT("Player não possui mana suficiente"),
+    NUMBER_CARD_EXCEEDED("Número de cartas acima do permitido")
 }
