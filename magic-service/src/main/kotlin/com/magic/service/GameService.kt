@@ -4,6 +4,7 @@ import com.magic.enums.GameStatusEnum
 import com.magic.enums.GameTypeEnum
 import com.magic.enums.MovementEnum
 import com.magic.enums.PlayerTypeEnum
+import com.magic.extensions.returnCardToDeck
 import com.magic.extensions.setCardsInPlayers
 import com.magic.model.Card
 import com.magic.model.Game
@@ -11,6 +12,7 @@ import com.magic.model.Player
 import com.magic.repository.GameRepository
 import com.magic.service.enums.ExceptionEnum
 import com.magic.service.exceptions.GameNotFoundException
+import com.magic.service.exceptions.MovementNotAllowedException
 import com.magic.service.exceptions.NotTurnPlayerException
 import com.magic.service.exceptions.PlayerNotFoundException
 import com.magic.service.movements.InitialMovement
@@ -57,11 +59,15 @@ open class GameService
         val game = findGameById(idGame)
 
         val card = cardService.findCardById(idCard)
+
+        if(card !in player.deck)
+            throw MovementNotAllowedException(ExceptionEnum.MOVEMENT_NOT_ALLOWED.message)
+
         val playerTurn = game.players[game.indexPlayerTurn]
 
-        if (playerTurn.id != player.id) {
-            throw NotTurnPlayerException(ExceptionEnum.NOT_TURN_PLAYER.name)
-        }
+        if (playerTurn.id != player.id)
+            throw NotTurnPlayerException(ExceptionEnum.NOT_TURN_PLAYER.message)
+
 
         val movement: InitialMovement = InitialMovement(
                 movementEnum = movementTypeEnum,
@@ -74,16 +80,16 @@ open class GameService
         movement.checkMovementTypeAndProcess()
         checkAndSetStatusGame(game)
         checkAndActualizeDeckPlayersAndGame(player, card, game)
-        game.indexPlayerTurn = (game.players.size)
         game.indexPlayerTurn = (game.indexPlayerTurn + 1) % game.players.size
+
         gameRepository.save(game)
     }
 
     fun cpuMovement(idGame: Int){
         val game  = findGameById(idGame)
         val player = game.players
-            .find { it.playerType.name.equals(PlayerTypeEnum.COMPUTER) }
-            ?: throw PlayerNotFoundException(ExceptionEnum.PLAYER_NOT_FOUND.name)
+            .find { it.playerType.name.equals(PlayerTypeEnum.COMPUTER.name) }
+            ?: throw PlayerNotFoundException(ExceptionEnum.PLAYER_NOT_FOUND.message)
         val card = player.deck[0]
 
         executeMovement(idGame, player.id!!,MovementEnum.APPLY_CARD,card.id!!.toInt())
@@ -91,13 +97,13 @@ open class GameService
 
     fun findGameById(id: Int): Game{
         return  gameRepository.findById(id)
-            .orElseThrow{ throw GameNotFoundException(ExceptionEnum.GAME_NOT_FOUND.name) }
+            .orElseThrow{ throw GameNotFoundException(ExceptionEnum.GAME_NOT_FOUND.message) }
     }
 
     private fun checkAndSetStatusGame(game: Game) {
         val playersDead: List<Player> = game.players.filter { it -> it.life == 0 }
 
-        when (playersDead.isEmpty()) {
+        when (playersDead.isNotEmpty()) {
             true -> {
                 game.gameStatus = GameStatusEnum.FINISHED
                 game.players.sortedBy { it.life }
@@ -107,11 +113,8 @@ open class GameService
     }
 
     private fun checkAndActualizeDeckPlayersAndGame(playerRound: Player, cardUsed: Card, game: Game) {
-        when (playerRound.playerType) {
-            PlayerTypeEnum.PLAYER -> game.cardsToBuyByPlayers.toMutableList().add(cardUsed)
-            PlayerTypeEnum.COMPUTER -> game.cardsToBuyByComputer.toMutableList().add(cardUsed)
-        }
         game.setCardsInPlayers(1)
+        game.returnCardToDeck(cardUsed)
     }
 
 }

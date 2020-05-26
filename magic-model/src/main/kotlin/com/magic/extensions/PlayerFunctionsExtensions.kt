@@ -8,9 +8,9 @@ import com.magic.model.Player
 
 fun Player.setCardsFromDeckCards(deckGame: List<Card>, numberCards: Int = Player.MaximmumNumberCards): List<Card>{
     if(numberCards > Player.MaximmumNumberCards)
-        throw NumberCardsExceeded(ExceptionsEnum.NUMBER_CARD_EXCEEDED.name)
+        throw NumberCardsExceeded(ExceptionsEnum.NUMBER_CARD_EXCEEDED.message)
 
-    this.deck = deckGame.take(numberCards)
+    this.deck += deckGame.take(numberCards)
     return deckGame.drop(numberCards)
 }
 
@@ -18,7 +18,7 @@ fun Player.useCardAndRemoveFromDeck(card: Card){
     if(card.manaCost <= this.mana){
         this.mana -= card.manaCost
     }else{
-        throw ManaInsufficientException(ExceptionsEnum.MADA_INSUFFICIENT.name)
+        throw ManaInsufficientException(ExceptionsEnum.MANA_INSUFFICIENT.message)
     }
     this.mana += card.manaRecover
     this.deck = deck.filter { it -> it.id != card.id }

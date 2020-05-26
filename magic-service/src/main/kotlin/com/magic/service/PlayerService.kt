@@ -14,7 +14,7 @@ class PlayerService@Autowired constructor(
 
     fun findPlayerById(id: Int): Player{
         return  playerRepository.findById(id)
-            .orElseThrow{ throw PlayerNotFoundException(ExceptionEnum.PLAYER_NOT_FOUND.name) }
+            .orElseThrow{ throw PlayerNotFoundException(ExceptionEnum.PLAYER_NOT_FOUND.message) }
     }
 
     fun savePlayer(player: Player): Player{

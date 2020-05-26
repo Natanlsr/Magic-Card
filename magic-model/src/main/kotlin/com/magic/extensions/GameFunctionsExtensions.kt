@@ -1,6 +1,7 @@
 package com.magic.extensions
 
 import com.magic.enums.PlayerTypeEnum
+import com.magic.model.Card
 import com.magic.model.Game
 import com.magic.model.Player
 
@@ -21,6 +22,12 @@ fun Game.setCardsInPlayers(numberCards: Int = Player.MaximmumNumberCards){
     }
 }
 
+fun Game.returnCardToDeck(card: Card){
+    when(card.playerType!!.type.name){
+        PlayerTypeEnum.COMPUTER.name -> this.cardsToBuyByComputer += card
+        PlayerTypeEnum.PLAYER.name   -> this.cardsToBuyByPlayers +=  card
+    }
+}
 fun Game.randomizePlayersOrder(){
     this.players = this.players.shuffled()
 }
