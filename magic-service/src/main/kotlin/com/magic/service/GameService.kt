@@ -12,6 +12,7 @@ import com.magic.repository.GameRepository
 import com.magic.service.enums.ExceptionEnum
 import com.magic.service.exceptions.GameNotFoundException
 import com.magic.service.exceptions.NotTurnPlayerException
+import com.magic.service.exceptions.PlayerNotFoundException
 import com.magic.service.movements.InitialMovement
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.messaging.simp.SimpMessagingTemplate
@@ -48,7 +49,7 @@ open class GameService
         return game
     }
 
-    fun executeMovement(idGame: Int,idPlayer: Int, movementTypeEnum: MovementEnum, idCard:Int): Game{
+    fun executeMovement(idGame: Int,idPlayer: Int, movementTypeEnum: MovementEnum, idCard: Int): Game{
         val player= playerService.findPlayerById(idPlayer)
         val game  = findGameById(idGame)
 
@@ -74,6 +75,16 @@ open class GameService
         game.indexPlayerTurn = (game.indexPlayerTurn + 1) % game.players.size
         gameRepository.save(game)
         return game
+    }
+
+    fun cpuMovement(idGame: Int): Game{
+        val game  = findGameById(idGame)
+        val player = game.players
+            .find { it.playerType.name.equals(PlayerTypeEnum.COMPUTER) }
+            ?: throw PlayerNotFoundException(ExceptionEnum.PLAYER_NOT_FOUND.name)
+        val card = player.deck[0]
+
+        return executeMovement(idGame, player.id!!,MovementEnum.APPLY_CARD,card.id!!.toInt())
     }
 
     fun findGameById(id: Int): Game{
