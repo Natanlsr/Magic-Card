@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor
 import javax.persistence.Entity
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
+import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
@@ -14,7 +15,6 @@ import javax.persistence.JoinTable
 import javax.persistence.ManyToMany
 import javax.persistence.SequenceGenerator
 
-@NoArgsConstructor
 @Entity
 data class Game(
     @Id
@@ -38,7 +38,7 @@ data class Game(
     @Enumerated(EnumType.STRING)
     var gameStatus: GameStatusEnum = GameStatusEnum.PREPARING,
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name="game_deck_players",
         joinColumns = [JoinColumn(name = "game_id")],

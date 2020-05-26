@@ -26,7 +26,7 @@ class CardService
     }
 
     fun findCardById(id: Int): Card{
-        return cardRepository.findById(id).orElseGet { throw CardNotFoundException(ExceptionEnum.CARD_NOT_FOUND.name) }
+        return cardRepository.findById(id).orElseThrow{ throw CardNotFoundException(ExceptionEnum.CARD_NOT_FOUND.name) }
     }
 
 

@@ -17,7 +17,7 @@ data class Card (
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "card_sequence")
     @SequenceGenerator(name = "card_sequence", sequenceName = "card_sequence", allocationSize = 1)
-    val id: Long? = null,
+    val id: Int? = null,
 
     var name: String = "",
 

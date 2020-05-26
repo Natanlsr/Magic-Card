@@ -4,6 +4,7 @@ import com.magic.enums.PlayerTypeEnum
 import javax.persistence.Entity
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
+import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
@@ -25,7 +26,7 @@ data class Player(
 
     var mana: Int = 20,
 
-    @ManyToMany
+    @ManyToMany()
     @JoinTable(
         name="player_deck",
         joinColumns = [JoinColumn(name = "player_id")],

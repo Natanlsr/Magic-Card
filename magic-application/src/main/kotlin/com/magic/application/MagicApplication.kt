@@ -3,7 +3,6 @@ package com.magic.application
 import com.magic.application.config.WebCorsConfig
 import com.magic.application.config.WebSocketConfig
 import com.magic.application.controller.GameController
-import org.modelmapper.ModelMapper
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.boot.runApplication
