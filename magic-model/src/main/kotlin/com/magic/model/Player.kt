@@ -19,7 +19,7 @@ data class Player(
     @SequenceGenerator(name = "player_sequence", sequenceName = "player_sequence", allocationSize = 1)
     val id: Int? = null,
 
-    val name: String? = null,
+    val name: String = "",
 
     var life: Int = 20,
 

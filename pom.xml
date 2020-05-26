@@ -61,6 +61,7 @@
                 <artifactId>magic-service</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 
