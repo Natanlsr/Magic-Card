@@ -134,7 +134,7 @@ open class GameService
         template.convertAndSend("/topic/game/moviment/cpu/executed", game.toGameResponse())
     }
 
-    fun findGameById(id: Int): Game {
+    open fun findGameById(id: Int): Game {
         return gameRepository.findById(id)
                 .orElseThrow { throw GameNotFoundException(ExceptionEnum.GAME_NOT_FOUND.message) }
     }

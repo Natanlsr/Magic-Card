@@ -15,7 +15,7 @@ import javax.persistence.SequenceGenerator
 @NoArgsConstructor
 data class PlayerType(
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "card_sequence")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "player_type_sequence")
     @SequenceGenerator(name = "player_type_sequence", sequenceName = "player_type_sequence", allocationSize = 1)
     @Setter
     val id: Long? = null,

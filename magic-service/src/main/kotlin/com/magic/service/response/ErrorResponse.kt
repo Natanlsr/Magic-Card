@@ -1,4 +1,6 @@
 package com.magic.service.response
 
-class ErrorResponse {
-}
+data class ErrorResponse(
+    val status: Int,
+    val msg: String
+)

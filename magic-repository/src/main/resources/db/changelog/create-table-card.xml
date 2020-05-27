@@ -40,7 +40,7 @@
     </changeSet>
 
     <changeSet id="2" author="Natan">
-        <createSequence sequenceName="card_sequence" startValue="200" schemaName="zup_magic"/>
+        <createSequence sequenceName="card_sequence" schemaName="zup_magic"/>
     </changeSet>
 
     <changeSet author="Natan" id="3">

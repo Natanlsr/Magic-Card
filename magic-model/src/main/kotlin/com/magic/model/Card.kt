@@ -16,7 +16,7 @@ import javax.persistence.SequenceGenerator
 data class Card(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "card_sequence")
-    @SequenceGenerator(name = "card_sequence", sequenceName = "card_sequence", allocationSize = 1)
+    @SequenceGenerator(name = "card_sequence")
     val id: Int? = null,
 
     var name: String = "",
