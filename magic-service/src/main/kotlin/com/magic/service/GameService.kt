@@ -109,14 +109,16 @@ open class GameService
         val player = game.players
             .find { it.playerType.name.equals(PlayerTypeEnum.COMPUTER.name) }
             ?: throw PlayerNotFoundException(ExceptionEnum.PLAYER_NOT_FOUND.message)
-        val card = player.canUseAnyCard()
-        var idCard: Int
 
-        if(card == null) {
-            movement = MovementEnum.JUMP_ROUND
-            idCard = -1
-        }else{
-            idCard = card.id!!
+        var idCard: Int = -1
+
+        player.canUseAnyCard().let {
+            if(it == null){
+                movement = MovementEnum.JUMP_ROUND
+                idCard = -1
+            }else{
+                idCard = it.id!!
+            }
         }
 
         executeMovement(idGame, player.id!!,movement,idCard)
