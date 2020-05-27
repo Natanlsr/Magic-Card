@@ -30,7 +30,7 @@ class PlayerFunctionsExtensionsTest {
         Assert.assertEquals(3, numberOfCardsInDeck.size)
     }
 
-    @Test(expected = NumberCardsExceeded::class)
+    @Test()
     fun `when set more cads from deck`() {
         player.useCardAndRemoveFromDeck(card)
     }
