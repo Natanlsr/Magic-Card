@@ -22,6 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
+import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.RestControllerAdvice
+import java.lang.RuntimeException
 import javax.transaction.Transactional
 
 
@@ -56,9 +59,13 @@ open class GameService
     @Async
     @Transactional
     open fun executePlayerMovement(idGame: Int, idPlayer: Int, movementTypeEnum: MovementEnum, idCard: Int){
-        val game = executeMovement(idGame,idPlayer,movementTypeEnum,idCard)
-        template.convertAndSend("/topic/game/moviment/player/executed", game.toGameResponse())
-        cpuMovement(idGame)
+        try {
+            val game = executeMovement(idGame, idPlayer, movementTypeEnum, idCard)
+            template.convertAndSend("/topic/game/moviment/player/executed", game.toGameResponse())
+            cpuMovement(idGame)
+        }catch (exception: RuntimeException){
+            template.convertAndSend("/topic/erros",exception.message)
+        }
     }
 
 
@@ -146,5 +153,6 @@ open class GameService
         game.setCardsInPlayers(1)
         game.returnCardToDeck(cardUsed)
     }
+
 
 }
