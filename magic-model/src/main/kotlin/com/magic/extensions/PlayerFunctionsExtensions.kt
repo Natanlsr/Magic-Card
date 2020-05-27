@@ -41,6 +41,6 @@ fun Player.recoverManaJumpRound(){
 
 fun Player.canUseAnyCard(): Card?{
     return this.deck.firstOrNull{
-        card -> card.manaCost <= this.life
+        card -> card.manaCost <= this.mana
     }
 }

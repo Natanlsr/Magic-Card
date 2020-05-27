@@ -58,28 +58,30 @@ open class GameService
 
     @Async
     @Transactional
-    open fun executePlayerMovement(idGame: Int, idPlayer: Int, movementTypeEnum: MovementEnum, idCard: Int){
+    open fun executePlayerMovement(idGame: Int, idPlayer: Int, movementTypeEnum: MovementEnum, idCard: Int) {
         try {
             val game = executeMovement(idGame, idPlayer, movementTypeEnum, idCard)
             template.convertAndSend("/topic/game/moviment/player/executed", game.toGameResponse())
-            cpuMovement(idGame)
-        }catch (exception: RuntimeException){
-            template.convertAndSend("/topic/erros",exception.message)
+            if (game.gameStatus !== GameStatusEnum.FINISHED) {
+                cpuMovement(idGame)
+            }
+        } catch (exception: RuntimeException) {
+            template.convertAndSend("/topic/erros", exception)
         }
     }
 
 
     @Transactional
-    open fun executeMovement(idGame: Int, idPlayer: Int, movementTypeEnum: MovementEnum, idCard: Int = -1): Game{
+    open fun executeMovement(idGame: Int, idPlayer: Int, movementTypeEnum: MovementEnum, idCard: Int = -1): Game {
         val player = playerService.findPlayerById(idPlayer)
         val game = findGameById(idGame)
 
 
-            val card = if(idCard != -1)
-                                cardService.findCardById(idCard)
-                             else null
+        val card = if (idCard != -1)
+            cardService.findCardById(idCard)
+        else null
 
-        if(card != null && card !in player.deck)
+        if (card != null && card !in player.deck)
             throw MovementNotAllowedException(ExceptionEnum.MOVEMENT_NOT_ALLOWED.message)
 
         val playerTurn = game.players[game.indexPlayerTurn]
@@ -99,7 +101,7 @@ open class GameService
         movement.checkMovementTypeAndProcess()
         checkAndSetStatusGame(game)
 
-        if(card != null)
+        if (card != null)
             checkAndActualizeDeckPlayersAndGame(player, card, game)
 
         game.indexPlayerTurn = (game.indexPlayerTurn + 1) % game.players.size
@@ -109,32 +111,32 @@ open class GameService
 
     @Async
     @Transactional
-    open fun cpuMovement(idGame: Int){
-        val game  = findGameById(idGame)
+    open fun cpuMovement(idGame: Int) {
+        val game = findGameById(idGame)
         var movement = MovementEnum.APPLY_CARD
 
         val player = game.players
-            .find { it.playerType.name.equals(PlayerTypeEnum.COMPUTER.name) }
-            ?: throw PlayerNotFoundException(ExceptionEnum.PLAYER_NOT_FOUND.message)
+                .find { it.playerType.name.equals(PlayerTypeEnum.COMPUTER.name) }
+                ?: throw PlayerNotFoundException(ExceptionEnum.PLAYER_NOT_FOUND.message)
 
         var idCard: Int = -1
 
         player.canUseAnyCard().let {
-            if(it == null){
+            if (it == null) {
                 movement = MovementEnum.JUMP_ROUND
                 idCard = -1
-            }else{
+            } else {
                 idCard = it.id!!
             }
         }
 
-        executeMovement(idGame, player.id!!,movement,idCard)
+        executeMovement(idGame, player.id!!, movement, idCard)
         template.convertAndSend("/topic/game/moviment/cpu/executed", game.toGameResponse())
     }
 
-    fun findGameById(id: Int): Game{
-        return  gameRepository.findById(id)
-            .orElseThrow{ throw GameNotFoundException(ExceptionEnum.GAME_NOT_FOUND.message) }
+    fun findGameById(id: Int): Game {
+        return gameRepository.findById(id)
+                .orElseThrow { throw GameNotFoundException(ExceptionEnum.GAME_NOT_FOUND.message) }
     }
 
     private fun checkAndSetStatusGame(game: Game) {
