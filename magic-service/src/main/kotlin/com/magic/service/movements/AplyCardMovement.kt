@@ -21,6 +21,7 @@ class AplyCardMovement : Movement {
             MovementEnum.APPLY_CARD -> {
                 this.playerRound?.let {
                     it.useCardAndRemoveFromDeck(this.card!!)
+
                 }
                 this.players?.let {
                     it.forEach { player ->

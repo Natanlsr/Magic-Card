@@ -21,6 +21,7 @@ fun Player.useCardAndRemoveFromDeck(card: Card){
         throw ManaInsufficientException(ExceptionsEnum.MANA_INSUFFICIENT.message)
     }
     this.mana += card.manaRecover
+    this.mana += Player.RecoverManaPerRound
     this.deck = deck.filter { it -> it.id != card.id }
 }
 

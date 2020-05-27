@@ -26,6 +26,8 @@ data class Player(
 
     var mana: Int = 20,
 
+
+
     @ManyToMany()
     @JoinTable(
         name="player_deck",
@@ -41,5 +43,7 @@ data class Player(
     companion object {
         @JvmField val MaximmumNumberCards = 4
         @JvmField val RecoverManaJumpRouund = 2
+        @JvmField val RecoverManaPerRound = 2
+
     }
 }
