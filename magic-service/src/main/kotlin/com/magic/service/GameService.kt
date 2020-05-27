@@ -4,12 +4,14 @@ import com.magic.enums.GameStatusEnum
 import com.magic.enums.GameTypeEnum
 import com.magic.enums.MovementEnum
 import com.magic.enums.PlayerTypeEnum
+import com.magic.extensions.canUseAnyCard
 import com.magic.extensions.returnCardToDeck
 import com.magic.extensions.setCardsInPlayers
 import com.magic.model.Card
 import com.magic.model.Game
 import com.magic.model.Player
 import com.magic.repository.GameRepository
+import com.magic.service.converter.toGameResponse
 import com.magic.service.enums.ExceptionEnum
 import com.magic.service.exceptions.GameNotFoundException
 import com.magic.service.exceptions.MovementNotAllowedException
@@ -31,9 +33,8 @@ open class GameService
         val playerService: PlayerService,
         val template: SimpMessagingTemplate
 ) {
-
-    @Transactional
     @Async
+    @Transactional
     open fun startVsCPU(player: Player) {
         val cpuPlayer = Player(name = "CPU", playerType = PlayerTypeEnum.COMPUTER)
 
@@ -49,18 +50,29 @@ open class GameService
         playerService.savePlayer(player)
         playerService.savePlayer(cpuPlayer)
         gameRepository.save(game)
-        template.convertAndSend("/topic/game/started", game)
+        template.convertAndSend("/topic/game/started", game.toGameResponse())
     }
 
-    @Transactional
     @Async
-    open fun executeMovement(idGame: Int, idPlayer: Int, movementTypeEnum: MovementEnum, idCard: Int){
+    @Transactional
+    open fun executePlayerMovement(idGame: Int, idPlayer: Int, movementTypeEnum: MovementEnum, idCard: Int){
+        val game = executeMovement(idGame,idPlayer,movementTypeEnum,idCard)
+        template.convertAndSend("/topic/game/moviment/player/executed", game.toGameResponse())
+        cpuMovement(idGame)
+    }
+
+
+    @Transactional
+    open fun executeMovement(idGame: Int, idPlayer: Int, movementTypeEnum: MovementEnum, idCard: Int = -1): Game{
         val player = playerService.findPlayerById(idPlayer)
         val game = findGameById(idGame)
 
-        val card = cardService.findCardById(idCard)
 
-        if(card !in player.deck)
+            val card = if(idCard != -1)
+                                cardService.findCardById(idCard)
+                             else null
+
+        if(card != null && card !in player.deck)
             throw MovementNotAllowedException(ExceptionEnum.MOVEMENT_NOT_ALLOWED.message)
 
         val playerTurn = game.players[game.indexPlayerTurn]
@@ -79,20 +91,36 @@ open class GameService
         //Execute game logic's
         movement.checkMovementTypeAndProcess()
         checkAndSetStatusGame(game)
-        checkAndActualizeDeckPlayersAndGame(player, card, game)
+
+        if(card != null)
+            checkAndActualizeDeckPlayersAndGame(player, card, game)
+
         game.indexPlayerTurn = (game.indexPlayerTurn + 1) % game.players.size
 
-        gameRepository.save(game)
+        return gameRepository.save(game)
     }
 
-    fun cpuMovement(idGame: Int){
+    @Async
+    @Transactional
+    open fun cpuMovement(idGame: Int){
         val game  = findGameById(idGame)
+        var movement = MovementEnum.APPLY_CARD
+
         val player = game.players
             .find { it.playerType.name.equals(PlayerTypeEnum.COMPUTER.name) }
             ?: throw PlayerNotFoundException(ExceptionEnum.PLAYER_NOT_FOUND.message)
-        val card = player.deck[0]
+        val card = player.canUseAnyCard()
+        var idCard: Int
 
-        executeMovement(idGame, player.id!!,MovementEnum.APPLY_CARD,card.id!!.toInt())
+        if(card == null) {
+            movement = MovementEnum.JUMP_ROUND
+            idCard = -1
+        }else{
+            idCard = card.id!!
+        }
+
+        executeMovement(idGame, player.id!!,movement,idCard)
+        template.convertAndSend("/topic/game/moviment/cpu/executed", game.toGameResponse())
     }
 
     fun findGameById(id: Int): Game{

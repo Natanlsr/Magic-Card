@@ -6,17 +6,15 @@ import com.magic.model.Card
 import com.magic.model.Player
 
 data class GameResponse(
-    val id: Int,
+    val id: Int?,
 
     var round: Int = 0,
 
-    var players: List<Player>,
+    var players: List<PlayerResponse>,
 
-    var gameType: GameTypeEnum,
+    var gameType: String,
 
-    var gameStatus: GameStatusEnum,
-
-    var cardsToBuyByPlayers: List<Card>,
+    var gameStatus: String,
 
     var indexPlayerTurn: Int
 )

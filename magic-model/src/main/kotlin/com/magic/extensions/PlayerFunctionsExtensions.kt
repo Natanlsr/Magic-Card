@@ -38,3 +38,9 @@ private fun minusValue(value: Int, valueMinus: Int): Int{
 fun Player.recoverManaJumpRound(){
     this.mana += Player.RecoverManaJumpRouund
 }
+
+fun Player.canUseAnyCard(): Card?{
+    return this.deck.firstOrNull{
+        card -> card.manaCost <= this.life
+    }
+}

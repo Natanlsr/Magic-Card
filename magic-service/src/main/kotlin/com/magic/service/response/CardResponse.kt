@@ -3,7 +3,7 @@ package com.magic.service.response
 import com.magic.model.PlayerType
 
 data class CardResponse(
-    val id: Long? = null,
+    val id: Int? = null,
 
     var name: String,
 
@@ -15,7 +15,6 @@ data class CardResponse(
 
     var lifeDamage: Int,
 
-    var description: String,
+    var description: String
 
-    var playerType: PlayerType
 )

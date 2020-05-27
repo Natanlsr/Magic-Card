@@ -32,12 +32,10 @@ class GameController(
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun executeMovement(@PathVariable(value = "gameId") gameId: Int,
                         @PathVariable(value = "playerId") playerId: Int,
-                        @RequestParam cardId: Int,
+                        @RequestParam(required = false, defaultValue = "-1") cardId: Int,
                         @RequestParam type: String){
-        gameService.executeMovement(gameId,playerId, MovementEnum.valueOf(type),cardId)
+        gameService.executePlayerMovement(gameId,playerId, MovementEnum.valueOf(type),cardId)
     }
-
-
 
 
 }

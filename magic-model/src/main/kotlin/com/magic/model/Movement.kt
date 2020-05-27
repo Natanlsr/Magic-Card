@@ -9,7 +9,7 @@ abstract class Movement{
     var playerRound: Player? = null
     var card: Card? = null
 
-    constructor(card: Card, players: List<Player>, playerRound: Player, movementEnum: MovementEnum) {
+    constructor(card: Card?, players: List<Player>, playerRound: Player, movementEnum: MovementEnum) {
         this.type = movementEnum
         this.card = card
         this.players = players

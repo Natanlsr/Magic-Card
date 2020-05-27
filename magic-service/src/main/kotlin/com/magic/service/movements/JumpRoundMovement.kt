@@ -8,7 +8,7 @@ import com.magic.model.Player
 
 class JumpRoundMovement: Movement {
 
-    constructor(card: Card, players: List<Player>, playerRound: Player, movementEnum: MovementEnum):
+    constructor(card: Card?, players: List<Player>, playerRound: Player, movementEnum: MovementEnum):
         super(card,players,playerRound,movementEnum) {
         this.netxMovement = null
     }

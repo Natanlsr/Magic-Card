@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 
 class AplyCardMovement : Movement {
 
-    constructor(card: Card, players: List<Player>, playerRound: Player, movementEnum: MovementEnum):
+    constructor(card: Card?, players: List<Player>, playerRound: Player, movementEnum: MovementEnum):
         super(card,players,playerRound,movementEnum) {
         this.netxMovement = JumpRoundMovement(card,players,playerRound,movementEnum)
     }
