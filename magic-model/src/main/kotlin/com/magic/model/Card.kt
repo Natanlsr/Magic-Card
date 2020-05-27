@@ -13,7 +13,7 @@ import javax.persistence.SequenceGenerator
 @Entity
 @Builder
 @NoArgsConstructor
-data class Card (
+data class Card(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "card_sequence")
     @SequenceGenerator(name = "card_sequence", sequenceName = "card_sequence", allocationSize = 1)
@@ -27,7 +27,7 @@ data class Card (
 
     var manaRecover: Int = 0,
 
-    var lifeDamage: Int = 0 ,
+    var lifeDamage: Int = 0,
 
     var description: String = "",
 
