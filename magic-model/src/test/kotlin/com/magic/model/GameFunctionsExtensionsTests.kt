@@ -4,6 +4,7 @@ import com.magic.enums.GameStatusEnum
 import com.magic.enums.GameTypeEnum
 import com.magic.enums.PlayerTypeEnum
 import com.magic.extensions.randomizeDecks
+import com.magic.extensions.returnCardToDeck
 import com.magic.extensions.setCardsFromDeckCards
 import com.magic.extensions.setCardsInPlayers
 import org.junit.Assert
@@ -18,6 +19,7 @@ class GameFunctionsExtensionsTests {
     private val card2: Card = Card(3, "Test3", 2, 0, 0, 3, "retira 3 de life custa 2 mana", null)
     private val card3: Card = Card(4, "Test4", 2, 0, 0, 3, "retira 3 de life custa 2 mana", null)
     private val card4: Card = Card(5, "Test5", 2, 0, 0, 3, "retira 3 de life custa 2 mana", null)
+    private val card5: Card = Card(5, "Test5", 2, 0, 0, 3, "retira 3 de life custa 2 mana", PlayerType(id = 1, type = PlayerTypeEnum.PLAYER))
     private val testDeck: List<Card> = mutableListOf(card, card1, card2, card3, card4)
     private val playerPVP: Player = Player(1, "TestPlayer", 20, 20, testDeck, PlayerTypeEnum.PLAYER)
     private val playerPC: Player = Player(1, "TestPlayer", 20, 20, testDeck, PlayerTypeEnum.PLAYER)
@@ -36,5 +38,12 @@ class GameFunctionsExtensionsTests {
         game2.setCardsInPlayers(3)
         playerPC.setCardsFromDeckCards(testDeck, 3)
         
+    }
+
+    @Test
+    fun `When to return Card To Deck `(){
+        game2.returnCardToDeck(card5)
+        Assert.assertNotEquals(testDeck,game2.cardsToBuyByPlayers)
+
     }
 }
